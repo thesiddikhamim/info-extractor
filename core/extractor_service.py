@@ -93,16 +93,21 @@ class ExtractorService:
                 max_score = 0
                 for kw, score in PRIORITY_KEYWORDS.items():
                     if kw in normalized_text or kw in normalized_path:
-                        max_score = max(max_score, score)
+                        # Base score is the keyword score
+                        match_score = score
+                        # Bonus if it starts with the keyword (e.g., "about-us")
+                        if normalized_text.startswith(kw) or normalized_path.startswith(f"/{kw}") or normalized_path.startswith(kw):
+                            match_score += 1
+                        
+                        max_score = max(max_score, match_score)
                 
                 if max_score > 0:
                     clean_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path.rstrip('/')}"
                     if clean_url not in found_urls or max_score > found_urls[clean_url]:
                         found_urls[clean_url] = max_score
 
-        # Sort by score descending
-        sorted_links = sorted(found_urls.items(), key=lambda x: x[1], reverse=True)
-        return [url for url, score in sorted_links]
+        # Return list of (URL, Score) tuples, sorted by score descending
+        return sorted(found_urls.items(), key=lambda x: x[1], reverse=True)
 
     def collect_page_text(self, base_url):
         if not base_url.startswith("http"):
@@ -130,14 +135,20 @@ class ExtractorService:
         pages_fetched.append({"url": base_url, "title": title})
         visited_urls.add(base_url)
 
-        discovered_urls = self.extract_links(html, base_url)
-        if not discovered_urls:
-            for path in SUB_PATHS:
-                discovered_urls.append(urljoin(base_url, path))
+        discovered_links = self.extract_links(html, base_url)
+        if not discovered_links:
+            # Fallback to standard paths if nothing link-based was found
+            discovered_links = [(urljoin(base_url, path), 2) for path in SUB_PATHS]
 
         fetch_count = 0
-        for url in discovered_urls:
-            if url in visited_urls or fetch_count >= 3:
+        limit = 8 # Increased limit
+        
+        for url, score in discovered_links:
+            # Skip if visited, or if we hit the limit (unless it's a very high priority page)
+            if url in visited_urls:
+                continue
+            
+            if fetch_count >= limit and score < 4:
                 continue
             
             yield {"status": "analyzing", "url": url}

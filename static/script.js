@@ -24,6 +24,7 @@ const saveMistral = document.getElementById('saveMistral');
 
 let eventSource = null;
 let uploadedUrls = [];
+let resultsCache = {}; // URL -> Full result data
 
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {
@@ -66,12 +67,11 @@ function addResultToTable(data) {
     const emails = data.emails && data.emails.length > 0 ? data.emails.join(', ') : 'No emails found';
     const phones = data.phones && data.phones.length > 0 ? data.phones.join(', ') : 'No phones found';
     
-    const socials = [];
-    if (data.linkedin) socials.push(`<span>LinkedIn: ${data.linkedin}</span>`);
-    if (data.twitter) socials.push(`<span>Twitter: ${data.twitter}</span>`);
-    if (data.facebook) socials.push(`<span>Facebook: ${data.facebook}</span>`);
-    if (data.instagram) socials.push(`<span>Instagram: ${data.instagram}</span>`);
+    const statusPill = data.error ? '⚠️ Fallback' : '✅ AI Extracted';
     
+    // Store in cache for viewer
+    resultsCache[data.url] = data;
+
     row.innerHTML = `
         <td class="row-url">${data.url}</td>
         <td><div class="row-business">${data.business_name || 'N/A'}</div></td>
@@ -80,12 +80,48 @@ function addResultToTable(data) {
         <td><div class="row-contacts">📞 ${phones}</div></td>
         <td><div class="row-contacts">📍 ${data.address || 'N/A'}</div></td>
         <td>
-            <span class="status-pill">${data.error ? '⚠️ Fallback' : '✅ AI Extracted'}</span>
+            <span class="status-pill">${statusPill}</span>
+        </td>
+        <td>
+            <button class="action-btn" title="View AI Context" onclick="showContext('${data.url}')">
+                <i data-lucide="eye"></i>
+            </button>
         </td>
     `;
     
     resultsTableBody.appendChild(row);
+    lucide.createIcons(); // Re-initialize icons for new rows
 }
+
+function showContext(url) {
+    const data = resultsCache[url];
+    if (!data) return;
+
+    const modal = document.getElementById('contextModal');
+    const title = document.getElementById('contextTitle');
+    const pageList = document.getElementById('pageList');
+    const rawData = document.getElementById('contextRaw');
+
+    title.textContent = `Content for ${url}`;
+    rawData.textContent = data.raw_text || "No content captured.";
+    
+    pageList.innerHTML = '';
+    if (data.pages_list && data.pages_list.length > 0) {
+        data.pages_list.forEach(p => {
+            const badge = document.createElement('span');
+            badge.className = 'fetched-badge';
+            badge.textContent = p.title || p.url;
+            pageList.appendChild(badge);
+        });
+    }
+
+    modal.style.display = 'flex';
+}
+
+// Close Context Modal
+document.getElementById('closeContext').addEventListener('click', () => {
+    document.getElementById('contextModal').style.display = 'none';
+});
 
 // Settings Logic
 function loadSettings() {

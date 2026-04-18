@@ -22,11 +22,21 @@ HEADERS = {
     )
 }
 
-RELEVANT_KEYWORDS = [
-    "contact", "about", "team", "staff", "owner", "founder", 
-    "management", "bio", "info", "project", "service", "portfolio",
-    "faq", "help", "careers", "job"
-]
+PRIORITY_KEYWORDS = {
+    "contact": 3,
+    "about": 3,
+    "team": 3,
+    "staff": 3,
+    "owner": 3,
+    "founder": 3,
+    "leadership": 3,
+    "management": 2,
+    "bio": 2,
+    "who": 2,
+    "info": 1,
+    "profile": 1,
+    "location": 1
+}
 
 SUB_PATHS = ["/contact", "/contact-us", "/about", "/about-us", "/team", "/our-team"]
 
@@ -53,30 +63,48 @@ class ExtractorService:
 
     def html_to_text(self, html):
         soup = BeautifulSoup(html, "html.parser")
+        title = soup.title.string if soup.title else ""
+        clean_title = title.strip() if title else ""
+
         for tag in soup(["script", "style", "nav", "footer", "head"]):
             tag.decompose()
-        return soup.get_text(separator=" ", strip=True)
+        text = soup.get_text(separator=" ", strip=True)
+        return text, clean_title
 
     def extract_links(self, html, base_url):
         soup = BeautifulSoup(html, "html.parser")
-        found_urls = set()
+        found_urls = {} # url -> max_score
         base_domain = urlparse(base_url).netloc
 
         for a in soup.find_all("a", href=True):
-            href = a["href"]
-            text = a.get_text(strip=True).lower()
+            href = a["href"].split("#")[0].rstrip("/")
+            if not href: continue
+            
+            text = a.get_text(separator=" ", strip=True).lower()
             full_url = urljoin(base_url, href)
             parsed_url = urlparse(full_url)
 
             if parsed_url.netloc == base_domain and parsed_url.path and parsed_url.path != "/":
-                match = any(kw in text or kw in parsed_url.path.lower() for kw in RELEVANT_KEYWORDS)
-                if match:
-                    clean_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
-                    found_urls.add(clean_url)
+                path_lower = parsed_url.path.lower()
+                # Normalize text and path for better matching (e.g., "about-us" -> "about us")
+                normalized_text = text.replace("-", " ").replace("_", " ")
+                normalized_path = path_lower.replace("-", " ").replace("_", " ")
+                
+                max_score = 0
+                for kw, score in PRIORITY_KEYWORDS.items():
+                    if kw in normalized_text or kw in normalized_path:
+                        max_score = max(max_score, score)
+                
+                if max_score > 0:
+                    clean_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path.rstrip('/')}"
+                    if clean_url not in found_urls or max_score > found_urls[clean_url]:
+                        found_urls[clean_url] = max_score
 
-        return list(found_urls)
+        # Sort by score descending
+        sorted_links = sorted(found_urls.items(), key=lambda x: x[1], reverse=True)
+        return [url for url, score in sorted_links]
 
-    def collect_page_text(self, base_url, status_callback=None):
+    def collect_page_text(self, base_url):
         if not base_url.startswith("http"):
             base_url = "https://" + base_url
 
@@ -84,18 +112,22 @@ class ExtractorService:
         visited_urls = set()
         all_text = ""
 
-        if status_callback: status_callback(f"Fetching: {base_url}")
+        yield {"status": "fetching", "url": base_url}
         html = self.fetch_html(base_url)
         if not html:
             fallback = base_url.replace("https://", "http://")
+            yield {"status": "fetching_fallback", "url": fallback}
             html = self.fetch_html(fallback)
 
         if not html:
+            yield {"status": "error", "msg": "Could not fetch homepage"}
             return "", []
 
-        homepage_text = self.html_to_text(html)
+        homepage_text, title = self.html_to_text(html)
+        yield {"status": "fetched", "url": base_url, "title": title}
+        
         all_text += homepage_text + "\n\n"
-        pages_fetched.append(base_url)
+        pages_fetched.append({"url": base_url, "title": title})
         visited_urls.add(base_url)
 
         discovered_urls = self.extract_links(html, base_url)
@@ -108,18 +140,19 @@ class ExtractorService:
             if url in visited_urls or fetch_count >= 3:
                 continue
             
-            if status_callback: status_callback(f"Analyzing: {url}")
+            yield {"status": "analyzing", "url": url}
             sub_html = self.fetch_html(url)
             if sub_html:
-                text = self.html_to_text(sub_html)
+                text, sub_title = self.html_to_text(sub_html)
                 if len(text) > 100:
+                    yield {"status": "fetched", "url": url, "title": sub_title}
                     all_text += f"{'='*20}\nURL: {url}\n{'='*20}\n{text}\n\n"
-                    pages_fetched.append(url)
+                    pages_fetched.append({"url": url, "title": sub_title})
                     visited_urls.add(url)
                     fetch_count += 1
             time.sleep(0.3)
 
-        return all_text.strip(), pages_fetched
+        yield {"status": "complete", "all_text": all_text.strip(), "pages": pages_fetched}
 
     def regex_fallback(self, text):
         emails = list(dict.fromkeys(re.findall(r"[\w.+\-]+@[\w\-]+(?:\.\w+)+", text)))
@@ -181,8 +214,25 @@ Website content:
         result = dict(EMPTY_RESULT)
         result["url"] = url
 
-        text, pages = self.collect_page_text(url)
+        text = ""
+        pages = []
         
+        for event in self.collect_page_text(url):
+            if event["status"] == "fetching":
+                yield {"type": "progress", "index": index, "total": total, "url": url, "status": f"Fetching homepage..."}
+            elif event["status"] == "fetching_fallback":
+                yield {"type": "progress", "index": index, "total": total, "url": url, "status": f"Retrying with HTTP..."}
+            elif event["status"] == "fetched":
+                title_str = f" \"{event['title']}\"" if event['title'] else ""
+                yield {"type": "progress", "index": index, "total": total, "url": url, "status": f"Fetched{title_str}"}
+            elif event["status"] == "analyzing":
+                yield {"type": "progress", "index": index, "total": total, "url": url, "status": f"Analyzing sub-page..."}
+            elif event["status"] == "complete":
+                text = event["all_text"]
+                pages = event["pages"]
+            elif event["status"] == "error":
+                yield {"type": "progress", "index": index, "total": total, "url": url, "status": f"Error: {event['msg']}"}
+
         yield {"type": "progress", "index": index, "total": total, "url": url, "status": f"Fetched {len(pages)} pages. Running AI..."}
 
         if not text:

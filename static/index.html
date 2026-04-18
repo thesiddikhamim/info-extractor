@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,16 @@
     <link rel="icon" type="image/png" href="/static/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
     <div class="glow-bg"></div>
-    
+
     <div class="app-container">
         <header>
             <div class="logo">
@@ -38,7 +42,7 @@
                     <i data-lucide="settings"></i>
                     <h2>Configure Extraction</h2>
                 </div>
-                
+
                 <div class="input-tabs">
                     <button id="tabUpload" class="tab-btn active" onclick="switchTab('upload')">
                         <i data-lucide="upload"></i> File Upload
@@ -65,7 +69,8 @@
 
                 <div id="pasteSection" class="tab-content">
                     <div class="input-group">
-                        <textarea id="manualUrls" placeholder="https://example.com&#10;https://another.com" rows="8"></textarea>
+                        <textarea id="manualUrls" placeholder="https://example.com&#10;https://another.com"
+                            rows="8"></textarea>
                     </div>
                 </div>
 
@@ -89,7 +94,7 @@
                     </div>
                     <div id="progressBadge" class="badge">Idle</div>
                 </div>
-                
+
                 <div class="progress-bar-container">
                     <div id="progressBar" class="progress-bar" style="width: 0%"></div>
                 </div>
@@ -149,13 +154,16 @@
             </div>
             <div class="modal-body">
                 <p class="modal-desc">Your keys are saved locally in your browser and never shared with our server.</p>
-                
+
                 <div class="input-grid">
                     <div class="input-group">
                         <label for="modelSelect">Active AI Model</label>
                         <select id="modelSelect">
-                            <option value="gemini/gemini-2.5-flash">Gemini 2.5 Flash (Fast)</option>
-                            <option value="gemini/gemini-2.5-pro">Gemini 2.5 Pro (Powerful)</option>
+                            <option value="gemini/gemini-3-flash-preview">Gemini 3 Flash</option>
+                            <option value="gemini/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash-Lite</option>
+                            <option value="gemini/gemini-2.5-pro">Gemini 2.5 Pro</option>
+                            <option value="gemini/gemini-2.5-flash">Gemini 2.5 Flash</option>
+                            <option value="gemini/gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
                             <option value="mistral/mistral-large-latest">Mistral Large (Smart)</option>
                             <option value="mistral/codestral-latest">Mistral Codestral</option>
                         </select>
@@ -184,4 +192,5 @@
         lucide.createIcons();
     </script>
 </body>
+
 </html>

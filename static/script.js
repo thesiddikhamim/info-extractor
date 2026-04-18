@@ -238,7 +238,12 @@ startBtn.addEventListener('click', async () => {
                     const data = JSON.parse(line.replace('data: ', ''));
                     
                     if (data.type === 'progress') {
-                        log(`${data.url}: ${data.status}`, 'progress');
+                        const status = data.status;
+                        let logType = 'progress';
+                        if (status.includes('Fetched')) logType = 'success';
+                        if (status.includes('Error')) logType = 'error';
+                        
+                        log(`${data.url}: ${status}`, logType);
                         updateProgress(data.index, data.total);
                     } else if (data.type === 'result') {
                         log(`Done: ${data.data.url}`, 'success');

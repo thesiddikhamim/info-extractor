@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Extractor Pro | AI-Powered Contact Intelligence</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i data-lucide="zap" class="icon-zap"></i>
+                <h1>Web Extractor <span>Pro</span></h1>
+            </div>
+            <div class="header-actions">
+                <div class="api-status">
+                    <span class="status-dot green"></span>
+                    <p>AI Engine Ready</p>
+                </div>
+                <button id="settingsBtn" class="icon-btn" title="API Settings">
+                    <i data-lucide="settings"></i>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="config-panel glass">
+                <div class="section-header">
+                    <i data-lucide="settings"></i>
+                    <h2>Configure Extraction</h2>
+                </div>
+                
+                <div class="input-tabs">
+                    <button id="tabUpload" class="tab-btn active" onclick="switchTab('upload')">
+                        <i data-lucide="upload"></i> File Upload
+                    </button>
+                    <button id="tabPaste" class="tab-btn" onclick="switchTab('paste')">
+                        <i data-lucide="type"></i> Paste URLs
+                    </button>
+                </div>
+
+                <div id="uploadSection" class="tab-content active">
+                    <div class="upload-zone" id="dropZone">
+                        <input type="file" id="fileInput" accept=".txt" hidden>
+                        <i data-lucide="upload-cloud"></i>
+                        <p>Drag & drop your <span>websites.txt</span></p>
+                        <button class="secondary-btn" onclick="document.getElementById('fileInput').click()">
+                            Choose File
+                        </button>
+                        <div id="fileInfo" class="file-info" style="display: none;">
+                            <i data-lucide="check-circle"></i>
+                            <span id="fileName">file.txt</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pasteSection" class="tab-content">
+                    <div class="input-group">
+                        <textarea id="manualUrls" placeholder="https://example.com&#10;https://another.com" rows="8"></textarea>
+                    </div>
+                </div>
+
+                <div class="actions-row">
+                    <button id="startBtn" class="primary-btn">
+                        <i data-lucide="play"></i>
+                        <span>Start Extraction</span>
+                    </button>
+                    <button id="clearBtn" class="secondary-btn">
+                        <i data-lucide="trash-2"></i>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="monitor-panel glass">
+                <div class="section-header">
+                    <div class="title-group">
+                        <i data-lucide="terminal"></i>
+                        <h2>Live Analysis Monitor</h2>
+                    </div>
+                    <div id="progressBadge" class="badge">Idle</div>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                </div>
+
+                <div id="console" class="console-box">
+                    <div class="console-line system">Waiting for input...</div>
+                </div>
+            </section>
+
+            <section class="results-panel glass">
+                <div class="section-header">
+                    <i data-lucide="database"></i>
+                    <h2>Extracted Records</h2>
+                    <button id="downloadBtn" class="secondary-btn" disabled>
+                        <i data-lucide="download"></i>
+                        <span>Export CSV</span>
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>URL</th>
+                                <th>Business Name</th>
+                                <th>Owner Name</th>
+                                <th>Email</th>
+                                <th>Phones</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Results will be injected here -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state">
+                        <i data-lucide="inbox"></i>
+                        <p>No records extracted yet.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Web Extractor Pro | AI-Powered Data Intel</p>
+        </footer>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <i data-lucide="settings"></i>
+                <h2>API Key Management</h2>
+                <button id="closeSettings" class="icon-btn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Your keys are saved locally in your browser and never shared with our server.</p>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modelSelect">Active AI Model</label>
+                        <select id="modelSelect">
+                            <option value="mistral/mistral-large-latest">Mistral Large (Smart)</option>
+                            <option value="mistral/codestral-latest">Mistral Codestral</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Mistral AI Key</label>
+                        <input type="password" id="saveMistral" placeholder="...">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveSettingsBtn" class="primary-btn">
+                    <i data-lucide="save"></i>
+                    <span>Save Settings</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

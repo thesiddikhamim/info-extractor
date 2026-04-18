@@ -518,63 +518,6 @@ main {
     grid-column: 1 / -1;
 }
 
-/* Context Modal Specifics */
-.context-modal {
-    max-width: 900px !important;
-    width: 90% !important;
-    max-height: 85vh;
-}
-
-.badge-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.fetched-badge {
-    background: rgba(139, 92, 246, 0.15);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    color: var(--accent-secondary);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-}
-
-.context-data {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
-    padding: 1rem;
-    max-height: 50vh;
-    overflow-y: auto;
-    border: 1px solid var(--border-color);
-}
-
-.context-data pre {
-    margin: 0;
-    white-space: pre-wrap;
-    word-break: break-word;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-}
-
-.action-btn {
-    padding: 0.4rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    color: var(--text-secondary);
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
-}
-
-.action-btn:hover {
-    background: var(--accent-primary);
-    color: white;
-}
-
 footer {
     text-align: center;
     color: var(--text-secondary);

@@ -23,8 +23,8 @@ HEADERS = {
 }
 
 PRIORITY_KEYWORDS = {
-    "contact": 3,
-    "about": 3,
+    "contact": 10,
+    "about": 10,
     "team": 3,
     "staff": 3,
     "owner": 3,
@@ -66,7 +66,7 @@ class ExtractorService:
         title = soup.title.string if soup.title else ""
         clean_title = title.strip() if title else ""
 
-        for tag in soup(["script", "style", "nav", "footer", "head"]):
+        for tag in soup(["script", "style", "nav", "footer", "head", "header", "aside", "iframe", "svg", "noscript"]):
             tag.decompose()
         text = soup.get_text(separator=" ", strip=True)
         return text, clean_title
@@ -92,12 +92,23 @@ class ExtractorService:
                 
                 max_score = 0
                 for kw, score in PRIORITY_KEYWORDS.items():
-                    if kw in normalized_text or kw in normalized_path:
+                    # Strict matching: keyword must be at the start of a word
+                    # This prevents matching "information" for "info" unless it starts with it
+                    pattern = rf"\b{re.escape(kw)}"
+                    
+                    if re.search(pattern, normalized_text) or re.search(pattern, normalized_path):
                         # Base score is the keyword score
                         match_score = score
-                        # Bonus if it starts with the keyword (e.g., "about-us")
-                        if normalized_text.startswith(kw) or normalized_path.startswith(f"/{kw}") or normalized_path.startswith(kw):
-                            match_score += 1
+                        
+                        # High bonus for exactly starting with the keyword (prefix)
+                        is_prefix = (
+                            normalized_text.startswith(kw) or 
+                            normalized_path.startswith(f"/{kw}") or 
+                            normalized_path.startswith(kw)
+                        )
+                        
+                        if is_prefix:
+                            match_score += 5
                         
                         max_score = max(max_score, match_score)
                 
@@ -136,9 +147,7 @@ class ExtractorService:
         visited_urls.add(base_url)
 
         discovered_links = self.extract_links(html, base_url)
-        if not discovered_links:
-            # Fallback to standard paths if nothing link-based was found
-            discovered_links = [(urljoin(base_url, path), 2) for path in SUB_PATHS]
+        # Note: Fallback SUB_PATHS removed as per user request to only fetch explicitly found matched pages.
 
         fetch_count = 0
         limit = 8 # Increased limit
@@ -185,7 +194,7 @@ Return ONLY a valid JSON object with these exact keys:
 }}
 
 Website content:
-{text[:12000]}"""
+{text[:100000]}"""
 
         try:
             # Detect if it's a Google Gemini model

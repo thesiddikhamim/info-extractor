@@ -25,7 +25,7 @@ Open your terminal (Mac) or Powerpulse/Command Prompt (Windows) in this project 
 
 ```bash
 # Install all required libraries
-pip install fastapi uvicorn litellm beautifulsoup4 requests
+pip install fastapi uvicorn litellm beautifulsoup4 requests google-genai
 ```
 
 > [!NOTE]

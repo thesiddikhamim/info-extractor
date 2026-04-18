@@ -153,6 +153,8 @@
                     <div class="input-group">
                         <label for="modelSelect">Active AI Model</label>
                         <select id="modelSelect">
+                            <option value="gemini/gemini-2.5-flash">Gemini 2.5 Flash (Fast)</option>
+                            <option value="gemini/gemini-2.5-pro">Gemini 2.5 Pro (Powerful)</option>
                             <option value="mistral/mistral-large-latest">Mistral Large (Smart)</option>
                             <option value="mistral/codestral-latest">Mistral Codestral</option>
                         </select>
@@ -160,6 +162,10 @@
                     <div class="input-group">
                         <label>Mistral AI Key</label>
                         <input type="password" id="saveMistral" placeholder="...">
+                    </div>
+                    <div class="input-group">
+                        <label>Google Gemini Key</label>
+                        <input type="password" id="saveGemini" placeholder="...">
                     </div>
                 </div>
             </div>

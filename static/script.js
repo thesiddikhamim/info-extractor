@@ -90,14 +90,16 @@ function addResultToTable(data) {
 // Settings Logic
 function loadSettings() {
     const settings = JSON.parse(localStorage.getItem('extractorSettings') || '{}');
-    if (modelSelect) modelSelect.value = settings.activeModel || 'mistral/mistral-large-latest';
+    if (modelSelect) modelSelect.value = settings.activeModel || 'gemini/gemini-2.5-flash';
     if (saveMistral) saveMistral.value = settings.mistral || '';
+    if (saveGemini) saveGemini.value = settings.gemini || '';
 }
 
 function saveSettings() {
     const settings = {
         activeModel: modelSelect.value,
-        mistral: saveMistral.value.trim()
+        mistral: saveMistral.value.trim(),
+        gemini: saveGemini.value.trim()
     };
     localStorage.setItem('extractorSettings', JSON.stringify(settings));
     log('Settings updated successfully.', 'success');
@@ -108,6 +110,7 @@ function getActiveKey() {
     const settings = JSON.parse(localStorage.getItem('extractorSettings') || '{}');
     const model = modelSelect.value;
     if (model.startsWith('mistral')) return settings.mistral;
+    if (model.startsWith('gemini')) return settings.gemini;
     return null;
 }
 

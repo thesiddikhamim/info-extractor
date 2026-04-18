@@ -6,6 +6,12 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 from litellm import completion
+try:
+    from google import genai
+    from google.genai import types
+except ImportError:
+    genai = None
+    types = None
 
 
 HEADERS = {
@@ -138,7 +144,25 @@ Website content:
 {text[:12000]}"""
 
         try:
-            # Use LiteLLM for multi-model support (Mistral, etc.)
+            # Detect if it's a Google Gemini model
+            if self.model_id.startswith("gemini"):
+                if not genai:
+                    raise ImportError("google-genai package not found. Run 'pip install google-genai'")
+                
+                # Strip prefix if present
+                model_name = self.model_id.split("/")[-1]
+                
+                client = genai.Client(api_key=self.api_key)
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json"
+                    )
+                )
+                return json.loads(response.text)
+            
+            # Use LiteLLM for Mistral and other providers
             response = completion(
                 model=self.model_id,
                 messages=[{"role": "user", "content": prompt}],

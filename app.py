@@ -25,7 +25,7 @@ latest_results = []
 class ExtractRequest(BaseModel):
     urls: List[str]
     api_key: str
-    model: str = "mistral/mistral-large-latest"
+    model: str = "gemini/gemini-2.5-flash"
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index():

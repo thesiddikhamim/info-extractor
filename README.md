@@ -1,79 +1,90 @@
-# 🚀 Web Extractor Pro
+# 🚀 Web Extractor Pro | Multi-Model AI Intelligence
 
-An AI-powered intelligence dashboard that extracts leads, contact information, and business profiles from websites using Mistral AI.
+Web Extractor Pro is a premium, AI-powered intelligence dashboard designed to extract lead data, contact information, and business profiles from any website. By combining the power of **Google Gemini 2.5** and **Mistral AI**, it provides highly accurate extractions with a sleek, modern interface.
 
 ---
 
-## 📋 Table of Contents
-1. [Prerequisites](#-prerequisites)
-2. [Installation](#-installation)
-3. [Running the App](#-running-the-app)
-4. [Usage Guide](#-usage-guide)
-5. [Troubleshooting](#-troubleshooting)
+## ✨ Features
+-   **Dual-Model Intelligence**: Switch between Google Gemini (native SDK) and Mistral AI (LiteLLM) for optimal extraction.
+-   **Live Analysis Monitor**: Real-time terminal-style console to track scraping progress.
+-   **Deep Scraping**: Automatically discovers contact, about, and team pages to find hidden data.
+-   **Privacy First**: Your API keys are stored locally in your browser's `localStorage` and never touch our servers.
+-   **Lead Export**: Export your results directly to professional CSV files.
+-   **Premium UI**: A stunning dark-mode interface with glassmorphism aesthetics and smooth animations.
 
 ---
 
 ## 🛠 Prerequisites
-You need **Python 3.9 or higher** installed on your system.
-- **Mac**: Usually comes with Python, but we recommend the latest version from [python.org](https://www.python.org/).
-- **Windows**: Install via the Microsoft Store or [python.org](https://www.python.org/). (Ensure "Add Python to PATH" is checked during installation).
+Ensure you have **Python 3.9 or higher** installed.
+
+-   **Mac**: Install via [python.org](https://www.python.org/) or `brew install python`.
+-   **Windows**: Install via the [Microsoft Store](https://www.microsoft.com/store/productId/9PJPW5LDXLZ5) or [python.org](https://www.python.org/). (Check "Add Python to PATH").
 
 ---
 
 ## 📦 Installation
-Open your terminal (Mac) or Powerpulse/Command Prompt (Windows) in this project folder and run:
+Open your terminal/command prompt in the project directory and run:
 
 ```bash
-# Install all required libraries
-pip install fastapi uvicorn litellm beautifulsoup4 requests google-genai
+pip install fastapi uvicorn litellm google-genai beautifulsoup4 requests pydantic
 ```
 
 > [!NOTE]
-> On **Mac**, you might need to use `pip3` instead of `pip`.
+> On **Mac**, if the command fails, try using `pip3` instead of `pip`.
 
 ---
 
-## 🏃‍♂️ Running the App
+## 🏃‍♂️ Running the Application
 
 ### 🍎 On Mac
-Open Terminal in the project folder and run:
 ```bash
 python3 -m uvicorn app:app --reload
 ```
 
 ### 🪟 On Windows
-Open PowerShell or CMD in the project folder and run:
 ```powershell
 python -m uvicorn app:app --reload
 ```
 
-After running the command, open your browser and go to:
+Once running, access the dashboard at:
 👉 **[http://localhost:8000](http://localhost:8000)**
 
 ---
 
-## 📖 Usage Guide
-1. **AI Model**: Select your preferred AI model (Mistral Large, Codestral, etc.) from the dropdown. 
-2. **API Key**: Enter the API key for your selected model. 
-   - Get **Mistral** keys at [Mistral Console](https://console.mistral.ai/).
-   - Get **OpenAI** keys at [OpenAI Dashboard](https://platform.openai.com/api-keys).
-3. **URLs**: Paste the list of websites you want to analyze (one per line).
-4. **Extract**: Click **Start Extraction** and watch the AI process the data in the live monitor.
-5. **Export**: Once complete, click **Export CSV** to save your leads.
+## 📖 Detailed Usage Guide
+
+### 1. Configure Your AI
+Click the **Settings (⚙️)** icon in the top right to manage your API keys.
+-   **Google Gemini**: Get your API key from [Google AI Studio](https://aistudio.google.com/).
+-   **Mistral AI**: Get your API key from [Mistral Console](https://console.mistral.ai/).
+
+### 2. Select Your Model
+Choose from the dropdown in the configuration panel:
+-   **Gemini 2.5 Flash**: Lightning fast, highly efficient for bulk processing.
+-   **Gemini 2.5 Pro**: Powerful reasoning for complex contact pages.
+-   **Mistral Large**: Smart, enterprise-grade extraction.
+
+### 3. Input URLs
+-   **File Upload**: Select a `.txt` file containing one URL per line.
+-   **Manual Paste**: Directly paste URLs into the text area.
+
+### 4. Extract and Export
+Click **Start Extraction**. Watch the live monitor as the AI analyzes each page. Once finished, click **Export CSV** to download your results.
 
 ---
 
-## 📂 Project Structure
-- `app.py`: The backend server.
-- `core/extractor_service.py`: The AI & Scraper "brain".
-- `static/`: The visual dashboard dashboard (HTML/CSS/JS).
+## 📂 Project Architecture
+-   `app.py`: FastAPI backend handling model routing and streaming results.
+-   `core/extractor_service.py`: The extraction engine using official `google-genai` and `litellm`.
+-   `static/`: Dashboard frontend (HTML/CSS/JS) with premium aesthetics.
+-   `static/favicon.png`: Custom-designed application brand icon.
 
 ---
 
 ## ⚠️ Troubleshooting
-- **ModuleNotFoundError**: Ensure you ran the `pip install` command above.
-- **API Key Error**: Double check your API key is active in the settings.
-- **Port 8000 in use**: If the app fails to start, you might have another server running. Close it or change the port in `app.py`.
+-   **ImportError**: If you see `ModuleNotFoundError`, double-check that you ran the `pip install` command.
+-   **SSL Errors**: If you can't fetch websites on Mac, ensure you have run the "Install Certificates" command in your Python folder.
+-   **API Limits**: Ensure your API keys have sufficient quota for extraction.
 
 ---
-*Made with ❤️ by Hamim | © 2026 Web Extractor Pro*
+*Made with ❤️ by Hamim*

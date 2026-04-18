@@ -76,4 +76,4 @@ After running the command, open your browser and go to:
 - **Port 8000 in use**: If the app fails to start, you might have another server running. Close it or change the port in `app.py`.
 
 ---
-*Created with ❤️ by Web Extractor Pro*
+*Made with ❤️ by Hamim | © 2026 Web Extractor Pro*

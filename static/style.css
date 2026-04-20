@@ -464,10 +464,10 @@ th {
 }
 
 td {
-    padding: 1.25rem 1rem;
-    font-size: 0.9rem;
+    padding: 1rem 0.75rem;
+    font-size: 0.85rem;
     border-bottom: 1px solid var(--border-color);
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 tr:hover td {
@@ -484,10 +484,52 @@ tr:hover td {
 
 .status-pill {
     font-size: 0.75rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
     background: rgba(16, 185, 129, 0.1);
     color: var(--success);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 110px;
+    justify-content: center;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+}
+
+.social-link:hover {
+    transform: translateY(-2px);
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.social-link.facebook:hover {
+    color: #1877f2;
+    border-color: #1877f2;
+    box-shadow: 0 0 10px rgba(24, 119, 242, 0.3);
+}
+
+.social-link.linkedin:hover {
+    color: #0077b5;
+    border-color: #0077b5;
+    box-shadow: 0 0 10px rgba(0, 119, 181, 0.3);
+}
+
+.social-link i {
+    width: 18px;
+    height: 18px;
 }
 
 .empty-state {

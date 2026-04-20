@@ -45,7 +45,9 @@ EMPTY_RESULT = {
     "business_name": "",
     "emails": [],
     "phones": [],
-    "address": ""
+    "address": "",
+    "facebook_url": "",
+    "linkedin_url": ""
 }
 
 class ExtractorService:
@@ -191,6 +193,8 @@ Return ONLY a valid JSON object with these exact keys:
   "emails": ["list", "of", "email", "addresses"],
   "phones": ["list", "of", "phone", "numbers"],
   "address": "Full physical address if found, otherwise empty string.",
+  "facebook_url": "Link to the business Facebook page if found.",
+  "linkedin_url": "Link to the business or owner's LinkedIn profile if found.",
 }}
 
 Website content:

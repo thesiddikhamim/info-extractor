@@ -65,7 +65,7 @@ async def download_results():
     
     output = io.StringIO()
     fieldnames = [
-        "url", "business_name", "owner_name", "emails", "phones", "address"
+        "url", "business_name", "owner_name", "emails", "phones", "address", "facebook_url", "linkedin_url"
     ]
     
     # Flatten results for CSV

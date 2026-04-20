@@ -76,6 +76,12 @@ function addResultToTable(data) {
         <td><div class="row-contacts">📞 ${phones}</div></td>
         <td><div class="row-contacts">📍 ${data.address || 'N/A'}</div></td>
         <td>
+            ${data.facebook_url ? `<a href="${data.facebook_url}" target="_blank" class="social-link facebook"><i data-lucide="facebook"></i></a>` : 'N/A'}
+        </td>
+        <td>
+            ${data.linkedin_url ? `<a href="${data.linkedin_url}" target="_blank" class="social-link linkedin"><i data-lucide="linkedin"></i></a>` : 'N/A'}
+        </td>
+        <td>
             <span class="status-pill">${statusPill}</span>
         </td>
     `;

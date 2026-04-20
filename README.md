@@ -14,16 +14,36 @@ Web Extractor Pro is a premium, AI-powered intelligence dashboard designed to ex
 
 ---
 
-## 🛠 Prerequisites
-Ensure you have **Python 3.9 or higher** installed.
-
 -   **Mac**: Install via [python.org](https://www.python.org/) or `brew install python`.
 -   **Windows**: Install via the [Microsoft Store](https://www.microsoft.com/store/productId/9PJPW5LDXLZ5) or [python.org](https://www.python.org/). (Check "Add Python to PATH").
 
+### 🔍 Verify Installation
+Check your version by running:
+```bash
+python --version  # Should be 3.9+
+```
+
 ---
 
-## 📦 Installation
-Open your terminal/command prompt in the project directory and run:
+## 📦 Installation & Setup
+
+### 1. Set Up a Virtual Environment (Recommended)
+It is highly recommended to run the app in a virtual environment to avoid dependency conflicts.
+
+**On Mac / Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**On Windows:**
+```powershell
+python -m venv venv
+.\venv\Scripts\activate
+```
+
+### 2. Install Dependencies
+Once the environment is activated, install the required packages:
 
 ```bash
 pip install fastapi uvicorn litellm google-genai beautifulsoup4 requests pydantic
